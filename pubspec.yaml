@@ -1,0 +1,23 @@
+name: food_scanner
+description: A Flutter app for food scanning.
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.10.5+9
+  path_provider: ^2.1.2
+  firebase_core: ^2.27.0
+  firebase_storage: ^11.6.0
+  cloud_firestore: ^4.15.8
+  google_fonts: ^6.1.0
+  
+
+
+flutter:
+  assets:
+    - assets/background.jpg
+    - assets/logo.png
+

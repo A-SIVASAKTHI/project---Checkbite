@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "912632632519",
+    "project_id": "checkbite-246cb",
+    "storage_bucket": "checkbite-246cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912632632519:android:6bf45fc7ebfeeb97d79ae2",
+        "android_client_info": {
+          "package_name": "com.example.food_scanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRVUX4y60WpCAl7KY2j2H2U_jSTanVSXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
