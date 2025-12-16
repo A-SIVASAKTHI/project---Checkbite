@@ -1,11 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'scan_page.dart';
 import 'contact_page.dart';
 import 'query_page.dart';
 import 'background_wrapper.dart';
+import 'profile_page.dart';
 
-class MainHomePage extends StatelessWidget {
+class MainHomePage extends StatefulWidget {
   const MainHomePage({super.key});
+
+  @override
+  State<MainHomePage> createState() => _MainHomePageState();
+}
+
+class _MainHomePageState extends State<MainHomePage> {
+  String usernameInitial = "U";
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfileInitial();
+  }
+
+  Future<void> loadProfileInitial() async {
+    final prefs = await SharedPreferences.getInstance();
+    String name = prefs.getString("username") ?? "User";
+
+    setState(() {
+      usernameInitial = name.isNotEmpty ? name[0].toUpperCase() : "U";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,206 +37,242 @@ class MainHomePage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 46, 153, 174),
+          elevation: 8,
+          toolbarHeight: 70,
+          backgroundColor: const Color(0xFF2E99AE),
           automaticallyImplyLeading: false,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          ),
           title: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('assets/logo.png', height: 48, width: 70),
-              const SizedBox(width: 10),
+              Image.asset('assets/logo.png', height: 45),
+              const SizedBox(width: 12),
               const Text(
                 'CHECKBITE',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 1,
                   color: Colors.white,
+                  letterSpacing: 2,
                 ),
               ),
             ],
           ),
           actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.grid_view, size: 28, color: Colors.white),
-              onSelected: (value) {
-                if (value == 'Scan') {
+            // --- Menu Icon without Circle ---
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: PopupMenuButton<String>(
+                icon: const Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                  size: 42,
+                ),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                onSelected: (value) {
+                  if (value == 'Scan') {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const ScanPage()));
+                  } else if (value == 'Contact') {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const ContactPage()));
+                  } else if (value == 'Query') {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const QueryPage()));
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'Scan',
+                    child: Text('Scan', style: TextStyle(fontSize: 18)),
+                  ),
+                  const PopupMenuItem(
+                    value: 'Contact',
+                    child: Text('Contact', style: TextStyle(fontSize: 18)),
+                  ),
+                  const PopupMenuItem(
+                    value: 'Query',
+                    child: Text('Query', style: TextStyle(fontSize: 18)),
+                  ),
+                ],
+              ),
+            ),
+
+            // --- Profile Avatar ---
+            Center(
+              child: GestureDetector(
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const ScanPage()),
+                    MaterialPageRoute(builder: (_) => const ProfilePage()),
                   );
-                } else if (value == 'Contact') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ContactPage()),
-                  );
-                } else if (value == 'Query') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const QueryPage()),
-                  );
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return ['Scan', 'Contact', 'Query'].map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.white,
                     child: Text(
-                      choice,
+                      usernameInitial,
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Roboto',
+                        color: Colors.teal,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
-                  );
-                }).toList();
-              },
+                  ),
+                ),
+              ),
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-            child: Column(
-              children: [
-                const Text(
-                  'Welcome to CheckBite 🍽️',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Roboto',
-                    color: Colors.white,
-                    letterSpacing: 1,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                const Text(
-                  'Detect food safety, get health suggestions, and connect with us — all in one place.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    height: 1.4,
-                    color: Colors.white70,
-                  ),
-                ),
-                const SizedBox(height: 25),
+        body: _buildHomeContent(context),
+      ),
+    );
+  }
 
-                // --- Feature Cards (Attractive Style) ---
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.9,
-                  children: [
-                    _buildFeatureCard(
-                      context,
-                      emoji: '🍏',
-                      title: 'Scan Food',
-                      desc: 'Check food safety',
-                      color: Colors.greenAccent.shade400,
-                      page: const ScanPage(),
-                    ),
-                    _buildFeatureCard(
-                      context,
-                      emoji: '📜',
-                      title: 'View History',
-                      desc: 'Previous scans',
-                      color: Colors.purpleAccent.shade400,
-                    ),
-                    _buildFeatureCard(
-                      context,
-                      emoji: '📞',
-                      title: 'Contact Us',
-                      desc: 'Reach our team',
-                      color: Colors.orangeAccent.shade400,
-                      page: const ContactPage(),
-                    ),
-                    _buildFeatureCard(
-                      context,
-                      emoji: '❓',
-                      title: 'Raise Query',
-                      desc: 'Ask questions',
-                      color: Colors.blueAccent.shade400,
-                      page: const QueryPage(),
-                    ),
-                  ],
-                ),
-              ],
+  // ---------------- BODY CONTENT ----------------
+  Widget _buildHomeContent(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Welcome to CheckBite 🍽️',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.brown,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
+            const SizedBox(height: 10),
+            const Text(
+              'Your smart partner for food safety detection and health insights.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                height: 1.4,
+                color: Colors.brown,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 35),
+            _buildFeatureGrid(context),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildFeatureCard(BuildContext context,
-      {required String emoji,
-      required String title,
-      required String desc,
-      required Color color,
-      Widget? page}) {
+  // ---------------- FEATURE CARDS GRID ----------------
+  Widget _buildFeatureGrid(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 18,
+      mainAxisSpacing: 18,
+      childAspectRatio: 0.95,
+      children: [
+        _buildFeatureCard(
+          context,
+          emoji: '🍏',
+          title: 'Scan Food',
+          desc: 'Check safety instantly',
+          color: Colors.green.shade400,
+          page: const ScanPage(),
+        ),
+        _buildFeatureCard(
+          context,
+          emoji: '📜',
+          title: 'View History',
+          desc: 'All previous scans',
+          color: Colors.deepPurple.shade400,
+        ),
+        _buildFeatureCard(
+          context,
+          emoji: '📞',
+          title: 'Contact Us',
+          desc: 'We are here to help',
+          color: Colors.orange.shade400,
+          page: const ContactPage(),
+        ),
+        _buildFeatureCard(
+          context,
+          emoji: '❓',
+          title: 'Raise Query',
+          desc: 'Ask any question',
+          color: Colors.blue.shade400,
+          page: const QueryPage(),
+        ),
+      ],
+    );
+  }
+
+  // ---------------- CARD UI ----------------
+  Widget _buildFeatureCard(
+    BuildContext context, {
+    required String emoji,
+    required String title,
+    required String desc,
+    required Color color,
+    Widget? page,
+  }) {
     return GestureDetector(
       onTap: page != null
           ? () {
               Navigator.push(context, MaterialPageRoute(builder: (_) => page));
             }
           : null,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxHeight: 130, // compact but slightly taller for emoji
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              color.withOpacity(0.85),
+              color.withOpacity(0.60),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: const [
+            BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(3, 4)),
+          ],
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.9),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 4,
-                offset: const Offset(2, 3),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.30),
+                shape: BoxShape.circle,
               ),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Circular Emoji
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 28),
-                ),
+              padding: const EdgeInsets.all(14),
+              child: Text(emoji, style: const TextStyle(fontSize: 34)),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 3),
-              Text(
-                desc,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.white70,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              desc,
+              style: const TextStyle(fontSize: 13, color: Colors.white70),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

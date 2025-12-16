@@ -8,15 +8,16 @@ class BackgroundWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/background.jpg'),
-          fit: BoxFit.cover,          // ✅ fill entire screen
+          fit: BoxFit.cover, // 🔥 FIX: No compression, looks natural
+          alignment: Alignment.center, // 🔥 Centers the image nicely
         ),
       ),
-      child: child,                   // ✅ directly place your page here
+      child: SafeArea(child: child),
     );
   }
 }

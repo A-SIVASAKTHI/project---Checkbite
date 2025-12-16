@@ -21,16 +21,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'CheckBite',
-      initialRoute: '/', // 👈 HomePage is the starting page
+
+      // 👇 This decides where the app starts from
+      initialRoute: '/',
+
       routes: {
         '/': (context) => HomePage(),
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
         '/mainhome': (context) => MainHomePage(),
-        '/scan': (context) => const ScanPage(), // ✅ fixed: no camera param
+        '/scan': (context) => const ScanPage(),
         '/symptom': (context) => SymptomPage(),
+
+        // 👇 ResultPage requires an imageUrl
         '/result': (context) => ResultPage(imageUrl: ''),
+
         '/feedback': (context) => FeedbackPage(),
+        
       },
     );
   }

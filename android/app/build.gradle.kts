@@ -1,50 +1,51 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("org.jetbrains.kotlin.android")   // Correct Kotlin plugin
     id("dev.flutter.flutter-gradle-plugin")
-}
-dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))  // OPTIONAL: use BoM to manage versions
-    implementation("com.google.firebase:firebase-auth-ktx")             // ← Firebase Auth
-    // ... your other dependencies (camera, tflite, etc.)
 }
 
 android {
     namespace = "com.example.food_scanner"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.2.12479018"
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    
-
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    }
+    // IMPORTANT: Use highest NDK version as required by your plugins
+    ndkVersion = "28.2.13676358"
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.food_scanner"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
 
+dependencies {
+    // Firebase BoM (manages all Firebase versions automatically)
+    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+
+    // Firebase Auth
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Add other plugins you use:
+    // implementation("androidx.camera:camera-core:<version>")
+    // implementation("org.tensorflow:tensorflow-lite:<version>")
+}
 
 flutter {
     source = "../.."

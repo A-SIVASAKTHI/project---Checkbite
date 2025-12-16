@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'background_wrapper.dart'; // <-- Import this
+import 'background_wrapper.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -28,9 +28,9 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundWrapper(            // ✅ Wrap with background image
+    return BackgroundWrapper(
       child: Scaffold(
-        backgroundColor: Colors.transparent,   // ✅ Make transparent
+        backgroundColor: Colors.transparent,
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -42,20 +42,25 @@ class _SignupPageState extends State<SignupPage> {
                   const Text(
                     'SIGN UP',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 24),
+
+                  const SizedBox(height: 30),
+
                   _buildTextField(
                     controller: _usernameController,
                     label: 'Username',
-                    validator: (value) => value == null || value.trim().isEmpty
-                        ? 'Please enter the username'
-                        : null,
+                    validator: (value) =>
+                        value == null || value.trim().isEmpty
+                            ? 'Please enter the username'
+                            : null,
                   ),
+
                   const SizedBox(height: 16),
+
                   _buildTextField(
                     controller: _emailController,
                     label: 'Email',
@@ -63,14 +68,17 @@ class _SignupPageState extends State<SignupPage> {
                       if (value == null || value.trim().isEmpty) {
                         return 'Please enter the email';
                       }
-                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                      final emailRegex =
+                          RegExp(r'^[^@]+@[^@]+\.[^@]+');
                       if (!emailRegex.hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16),
+
                   _buildTextField(
                     controller: _passwordController,
                     label: 'Password',
@@ -85,20 +93,37 @@ class _SignupPageState extends State<SignupPage> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 24),
+
                   SizedBox(
-                    width: 150,
+                    width: 180,
                     height: 45,
                     child: ElevatedButton(
                       onPressed: _submitForm,
-                      child: const Text('Sign Up'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.teal[800],
+                        backgroundColor: Colors.teal,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Text(
+                      "Already have an account? Login",
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
                 ],
@@ -121,21 +146,23 @@ class _SignupPageState extends State<SignupPage> {
       child: TextFormField(
         controller: controller,
         obscureText: isPassword,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.white),
+          labelStyle: const TextStyle(color: Colors.black),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.8),
           enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white70),
-            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.teal),
+            borderRadius: BorderRadius.circular(10),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.redAccent),
-            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.red),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
         validator: validator,

@@ -19,7 +19,7 @@ class SymptomPage extends StatelessWidget {
               Text(
                 'Symptom Analysis:\n\n• Brown spots\n• Soft texture',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: const Color.fromARGB(255, 12, 10, 10)),
               ),
               SizedBox(height: 30),
               ElevatedButton(
